@@ -129,6 +129,7 @@ package com.example.todo.controller;
 
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -146,7 +147,7 @@ import com.example.todo.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+@Slf4j(topic = "UserController")
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -158,6 +159,7 @@ public class UserController {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Operation(summary = "Register a new user")
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         try {
@@ -182,6 +184,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Authenticate a user")
     @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
         try {
@@ -199,6 +202,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Delete a user account")
     @PostMapping("/delaccount")
     public ResponseEntity<?> deleteAccount(@RequestBody UserDTO userDTO) {
         try {
@@ -216,6 +220,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Get user information")
     @PostMapping("/userinfo")
     public ResponseEntity<?> getUserInfo(@RequestBody Map<String, String> request) {
         try {
