@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
@@ -53,7 +54,8 @@ public class WebSecurityConfig {
                          .requestMatchers(
                                  new AntPathRequestMatcher("/"),
                                  new AntPathRequestMatcher("/auth/**"),
-                                 new AntPathRequestMatcher("/h2-console/**"))
+                                 new AntPathRequestMatcher("/h2-console/**"),
+                                 new AntPathRequestMatcher("/swagger-ui/**"))
                          .permitAll();
              } catch (Exception e) {
                  e.printStackTrace();
@@ -82,6 +84,10 @@ public class WebSecurityConfig {
          http.authorizeHttpRequests(request -> request.anyRequest().authenticated());
 
          return http.build();
+    }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/h2-console/**","/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html");
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
