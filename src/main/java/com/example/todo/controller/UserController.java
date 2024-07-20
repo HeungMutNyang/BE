@@ -129,8 +129,10 @@ package com.example.todo.controller;
 
 import java.util.Map;
 
+import com.example.todo.dto.LoginDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -190,12 +192,22 @@ public class UserController {
         try {
             UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
             final String token = tokenProvider.create(user);
-            final UserDTO responseUserDTO = UserDTO.builder()
+            /*final UserDTO responseUserDTO = UserDTO.builder()
                     .email(user.getEmail())
                     .id(user.getId())
                     .token(token)
+                    .build();*/
+
+            final LoginDTO responseUserDTO = LoginDTO.builder()
+                    .email(user.getEmail())
+                    .password(user.getPassword())
                     .build();
-            return ResponseEntity.ok().body(responseUserDTO);
+
+            // 헤더에 토큰 추가
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + token);
+
+            return ResponseEntity.ok().headers(headers).body(responseUserDTO);
         } catch (IllegalArgumentException e) {
             ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity.badRequest().body(responseDTO);
