@@ -53,6 +53,7 @@
 
 package com.example.todo.service;
 
+import com.example.todo.dto.UserUpdateDto;
 import com.example.todo.model.UserEntity;
 import com.example.todo.persistence.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -107,6 +108,28 @@ public class UserService {
         } else {
             throw new RuntimeException("[account_delete]id does not exist");
         }
+    }
+
+    public UserEntity updateUser(UserUpdateDto userUpdateDto) {
+        UserEntity user = userRepository.findById(userUpdateDto.getId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (userUpdateDto.getUsername() != null) {
+            user.setUsername(userUpdateDto.getUsername());
+        }
+        if (userUpdateDto.getEmail() != null) {
+            user.setEmail(userUpdateDto.getEmail());
+        }
+        if (userUpdateDto.getPassword() != null) {
+            user.setPassword(userUpdateDto.getPassword());
+        }
+        if (userUpdateDto.getHeight() != null) {
+            user.setHeight(userUpdateDto.getHeight());
+        }
+        if (userUpdateDto.getWeight() != null) {
+            user.setWeight(userUpdateDto.getWeight());
+        }
+
+        return userRepository.save(user);
     }
 }
 
