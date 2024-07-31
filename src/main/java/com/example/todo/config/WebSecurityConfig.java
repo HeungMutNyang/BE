@@ -1,7 +1,5 @@
 package com.example.todo.config;
 
-
-
 import com.example.todo.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,15 +30,15 @@ import org.springframework.web.cors.CorsConfiguration;
 public class WebSecurityConfig {
 
 	private final ObjectMapper objectMapper;
-	
+
     @Autowired
     public WebSecurityConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
-	
+
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-   
+
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     	 http.csrf(AbstractHttpConfigurer::disable);
@@ -55,7 +53,8 @@ public class WebSecurityConfig {
                                  new AntPathRequestMatcher("/"),
                                  new AntPathRequestMatcher("/auth/**"),
                                  new AntPathRequestMatcher("/h2-console/**"),
-                                 new AntPathRequestMatcher("/swagger-ui/**"))
+                                 new AntPathRequestMatcher("/swagger-ui/**")
+                                 )
                          .permitAll();
              } catch (Exception e) {
                  e.printStackTrace();
@@ -107,3 +106,5 @@ public class WebSecurityConfig {
         return source;
     }
 }
+
+
