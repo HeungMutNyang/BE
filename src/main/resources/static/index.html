@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<h1>WebSocket Client</h1>
+<div id="messages"></div>
+<script>
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // JWT 토큰
+
+    stompClient.connect({ Authorization: `Bearer ${token}` }, (frame) => {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/schedule', (message) => {
+            const schedule = JSON.parse(message.body);
+            showPopup(schedule);
+        });
+    });
+
+    function showPopup(schedule) {
+        const popup = document.createElement('div');
+        popup.innerHTML = `
+                <div>
+                    <p>Did you complete: ${schedule.title}?</p>
+                    <button onclick="completeSchedule('${schedule.id}')">Yes</button>
+                    <button onclick="closePopup()">No</button>
+                </div>
+            `;
+        popup.style.position = 'fixed';
+        popup.style.top = '50%';
+        popup.style.left = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.backgroundColor = '#fff';
+        popup.style.padding = '20px';
+        popup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+        document.body.appendChild(popup);
+    }
+
+    function completeSchedule(scheduleId) {
+        fetch('/schedule/complete', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id: scheduleId, done: true })
+        }).then(() => closePopup());
+    }
+
+    function closePopup() {
+        const popup = document.querySelector('div');
+        if (popup) {
+            document.body.removeChild(popup);
+        }
+    }
+</script>
+</body>
+</html>
+
