@@ -17,5 +17,6 @@ spring:
     view:
       prefix: /templates/
       suffix: .html
+
 server:
   port: 8080

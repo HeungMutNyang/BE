@@ -164,6 +164,7 @@ public class UserController {
     @Operation(summary = "Register a new user")
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
+        log.info("Received signup request: {}", userDTO);
         try {
             UserEntity user = UserEntity.builder()
                     .email(userDTO.getEmail())
@@ -178,9 +179,12 @@ public class UserController {
                     .build();
             return ResponseEntity.ok().body(responseUserDTO);
         } catch (IllegalArgumentException e) {
+            log.error("Error during signup: {}", e.getMessage());
             ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity.badRequest().body(responseDTO);
         } catch (Exception e) {
+            log.error("Unexpected error during signup", e);
+            log.error("Exception: ", e);
             ResponseDTO<Object> responseDTO = ResponseDTO.builder().error("회원가입 중 오류가 발생했습니다.").build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
