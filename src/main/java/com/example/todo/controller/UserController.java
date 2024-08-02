@@ -130,16 +130,14 @@ package com.example.todo.controller;
 import java.util.Map;
 
 import com.example.todo.dto.LoginDTO;
+import com.example.todo.dto.UserUpdateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.todo.dto.ResponseDTO;
 import com.example.todo.dto.UserDTO;
@@ -164,7 +162,6 @@ public class UserController {
     @Operation(summary = "Register a new user")
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
-        log.info("Received signup request: {}", userDTO);
         try {
             UserEntity user = UserEntity.builder()
                     .email(userDTO.getEmail())
@@ -179,12 +176,9 @@ public class UserController {
                     .build();
             return ResponseEntity.ok().body(responseUserDTO);
         } catch (IllegalArgumentException e) {
-            log.error("Error during signup: {}", e.getMessage());
             ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity.badRequest().body(responseDTO);
         } catch (Exception e) {
-            log.error("Unexpected error during signup", e);
-            log.error("Exception: ", e);
             ResponseDTO<Object> responseDTO = ResponseDTO.builder().error("회원가입 중 오류가 발생했습니다.").build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
@@ -264,6 +258,31 @@ public class UserController {
             return ResponseEntity.ok().body(responseUserDTO);
         } catch (Exception e) {
             ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @Operation(summary = "Update user information")
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+        try {
+            if (userUpdateDto.getId() == null) {
+                throw new IllegalArgumentException("User ID must not be null");
+            }
+            UserEntity updatedUser = userService.updateUser(userUpdateDto);
+            UserUpdateDto responseUserDTO = UserUpdateDto.builder()
+                    .email(updatedUser.getEmail())
+                    .id(updatedUser.getId())
+                    .username(updatedUser.getUsername())
+                    .height(updatedUser.getHeight())
+                    .weight(updatedUser.getWeight())
+                    .build();
+            return ResponseEntity.ok().body(responseUserDTO);
+        } catch (IllegalArgumentException e) {
+            ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        } catch (Exception e) {
+            ResponseDTO<Object> responseDTO = ResponseDTO.builder().error("사용자 정보 업데이트 중 오류가 발생했습니다.").build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
