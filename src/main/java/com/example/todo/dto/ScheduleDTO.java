@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ScheduleDTO {
     private String id;
     private String title;
-    private boolean done;
+    private boolean done = false;
     private LocalDateTime scheduleDateTime; // 날짜와 시간 추가
 
     public ScheduleDTO(final ScheduleEntity entity) {
