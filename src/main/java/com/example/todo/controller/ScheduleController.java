@@ -31,6 +31,7 @@ public class ScheduleController {
             log.info("Log:dto => entity ok!");
             entity.setId(null);
             entity.setUserId(userId);
+            entity.setDone(false);
             List<ScheduleEntity> entities = service.create(entity);
             List<ScheduleDTO> dtos = entities.stream().map(ScheduleDTO::new).collect(Collectors.toList());
             log.info("Log:entities => dtos ok!");

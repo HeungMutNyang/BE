@@ -25,7 +25,7 @@ public class ScheduleEntity {
     private String id;
     private String userId;
     private String title;
-    private boolean done;
+    private boolean done = false;
     private LocalDateTime scheduleDateTime; // 날짜와 시간 필드
 }
 
