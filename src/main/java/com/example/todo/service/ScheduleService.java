@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +26,12 @@ public class ScheduleService {
 
     public List<ScheduleEntity> retrieve(final String userId) {
         return repository.findByUserId(userId);
+    }
+
+    public List<ScheduleEntity> retrieveByDate(final String userId, final LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        return repository.findByUserIdAndScheduleDateTimeBetween(userId, startOfDay, endOfDay);
     }
 
     public List<ScheduleEntity> retrieveByDateTimeRange(final String userId, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
