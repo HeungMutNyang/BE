@@ -41,7 +41,7 @@ public class UserEntity {
 	@Column(nullable=false)
 	private String password;
 
-	private Integer height;
-	private Integer weight;
+	private Double height;
+	private Double weight;
 
 }
