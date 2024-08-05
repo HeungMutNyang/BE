@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +54,16 @@ public class ScheduleController {
 
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/date")
+    public ResponseEntity<?> retrieveScheduleByDate(@AuthenticationPrincipal String userId, @RequestParam String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        List<ScheduleEntity> entities = service.retrieveByDate(userId, localDate);
+        List<ScheduleDTO> dtos = entities.stream().map(ScheduleDTO::new).collect(Collectors.toList());
+        ResponseDTO<ScheduleDTO> response = ResponseDTO.<ScheduleDTO>builder().data(dtos).build();
+        return ResponseEntity.ok().body(response);
+    }
+
 
     @PutMapping
     public ResponseEntity<?> updateSchedule(@AuthenticationPrincipal String userId, @RequestBody ScheduleDTO dto) {
