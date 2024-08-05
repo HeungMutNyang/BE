@@ -102,6 +102,10 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public void delete(String userId) {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
@@ -118,9 +122,6 @@ public class UserService {
         }
         if (userUpdateDto.getEmail() != null) {
             user.setEmail(userUpdateDto.getEmail());
-        }
-        if (userUpdateDto.getPassword() != null) {
-            user.setPassword(userUpdateDto.getPassword());
         }
         if (userUpdateDto.getHeight() != null) {
             user.setHeight(userUpdateDto.getHeight());
