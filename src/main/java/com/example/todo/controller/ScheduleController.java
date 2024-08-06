@@ -31,7 +31,6 @@ public class ScheduleController {
             log.info("Log:dto => entity ok!");
             entity.setId(null);
             entity.setUserId(userId);
-            entity.setDone(false);
             List<ScheduleEntity> entities = service.create(entity);
             List<ScheduleDTO> dtos = entities.stream().map(ScheduleDTO::new).collect(Collectors.toList());
             log.info("Log:entities => dtos ok!");
@@ -65,6 +64,21 @@ public class ScheduleController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> retrieveAllSchedules(@AuthenticationPrincipal String userId) {
+        List<ScheduleEntity> entities = service.retrieve(userId);
+        List<ScheduleDTO> dtos = entities.stream().map(ScheduleDTO::new).collect(Collectors.toList());
+        ResponseDTO<ScheduleDTO> response = ResponseDTO.<ScheduleDTO>builder().data(dtos).build();
+        return ResponseEntity.ok().body(response);
+    }
+
+
+    public ResponseEntity<?> retrieve(@AuthenticationPrincipal String userId) {
+        List<ScheduleEntity> entities = service.retrieve(userId);
+        List<ScheduleDTO> dtos = entities.stream().map(ScheduleDTO::new).collect(Collectors.toList());
+        ResponseDTO<ScheduleDTO> response = ResponseDTO.<ScheduleDTO>builder().data(dtos).build();
+        return ResponseEntity.ok().body(response);
+    }
 
     @PutMapping
     public ResponseEntity<?> updateSchedule(@AuthenticationPrincipal String userId, @RequestBody ScheduleDTO dto) {
@@ -115,6 +129,7 @@ public class ScheduleController {
         }
     }
 }
+
 
 
 
