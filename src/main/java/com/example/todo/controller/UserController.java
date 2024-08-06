@@ -184,27 +184,43 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "Authenticate a user")
-    @PostMapping("/signin")
+//    @Operation(summary = "Authenticate a user")
+//    @PostMapping("/signin")
+//    public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
+//        try {
+//            UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
+//            final String token = tokenProvider.create(user);
+//            final UserDTO responseUserDTO = UserDTO.builder()
+//                    .email(user.getEmail())
+//                    .password(user.getPassword())
+//                    .token(token)
+//                    .build();
+//
+////            final LoginDTO responseUserDTO = LoginDTO.builder()
+////                    .email(user.getEmail())
+////                    .password(user.getPassword())
+////                    .build();
+//
+//            // 헤더에 토큰 추가
+//            //HttpHeaders headers = new HttpHeaders();
+//            //headers.set("Authorization", "Bearer " + token);
+//
+//            return ResponseEntity.ok().body(responseUserDTO);
+//        } catch (IllegalArgumentException e) {
+//            ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+//            return ResponseEntity.badRequest().body(responseDTO);
+//        }
+//    }
+
     public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
         try {
             UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
             final String token = tokenProvider.create(user);
             final UserDTO responseUserDTO = UserDTO.builder()
                     .email(user.getEmail())
-                    .password(user.getPassword())
+                    .id(user.getId())
                     .token(token)
                     .build();
-
-//            final LoginDTO responseUserDTO = LoginDTO.builder()
-//                    .email(user.getEmail())
-//                    .password(user.getPassword())
-//                    .build();
-
-            // 헤더에 토큰 추가
-            //HttpHeaders headers = new HttpHeaders();
-            //headers.set("Authorization", "Bearer " + token);
-
             return ResponseEntity.ok().body(responseUserDTO);
         } catch (IllegalArgumentException e) {
             ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
