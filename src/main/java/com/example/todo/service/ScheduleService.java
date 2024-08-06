@@ -28,14 +28,14 @@ public class ScheduleService {
         return repository.findByUserId(userId);
     }
 
+    public List<ScheduleEntity> retrieveByDateTimeRange(final String userId, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        return repository.findByUserIdAndScheduleDateTimeBetween(userId, startDateTime, endDateTime);
+    }
+
     public List<ScheduleEntity> retrieveByDate(final String userId, final LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
         return repository.findByUserIdAndScheduleDateTimeBetween(userId, startOfDay, endOfDay);
-    }
-
-    public List<ScheduleEntity> retrieveByDateTimeRange(final String userId, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return repository.findByUserIdAndScheduleDateTimeBetween(userId, startDateTime, endDateTime);
     }
 
     public List<ScheduleEntity> update(final ScheduleEntity entity) {
